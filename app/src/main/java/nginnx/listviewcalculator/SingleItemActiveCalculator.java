@@ -76,13 +76,16 @@ public abstract class SingleItemActiveCalculator implements Calculator {
                 visibility = visibilityPercents;
             }
         }
-        if (firstVisiblePosition==0) {
-            mostVisiblePosition = lastVisiblePosition-1;
-            mostVisibleView = getConvertViewByPosition(mostVisiblePosition);
+        if (firstVisiblePosition == 0) {
+            if (lastVisiblePosition - 1 >= 0) {
+                mostVisiblePosition = lastVisiblePosition - 1;
+                mostVisibleView = getConvertViewByPosition(mostVisiblePosition);
+
+            }
         }
         if (mostVisiblePosition != -1) {
             if (mostVisiblePosition != currentActivePosition) {
-                if(currentActivePosition!=-1){
+                if (currentActivePosition != -1) {
                     callBack.deactivateCurrentItem(currentActivePosition, currentActiveView);
                 }
                 currentActivePosition = mostVisiblePosition;
