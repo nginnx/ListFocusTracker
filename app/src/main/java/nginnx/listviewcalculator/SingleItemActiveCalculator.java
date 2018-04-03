@@ -1,7 +1,6 @@
 package nginnx.listviewcalculator;
 
 import android.graphics.Rect;
-import android.support.annotation.Nullable;
 import android.view.View;
 
 /**
@@ -16,7 +15,7 @@ import android.view.View;
 *
 *
 * */
-public abstract class SingleItemActiveCalculator implements Calculator {
+public final class SingleItemActiveCalculator implements Calculator {
     private CalculatorCallBack callBack;
     private Rect rectForCalculate = new Rect();
     private int currentActivePosition = -1;
@@ -50,20 +49,18 @@ public abstract class SingleItemActiveCalculator implements Calculator {
         return percents;
     }
 
-    /**
-     * @param firstVisiblePosition ListView和RecyclerView 发生变化的position
-     * @param lastVisiblePosition
-     */
     @Override
-    public void calculateMostVisibleView(int firstVisiblePosition, int lastVisiblePosition) {
+    public void calculateMostVisibleView(ItemPositionProvider provider) {
+        int firstVisiblePosition = provider.getFirstVisiblePosition() - provider.getHeadersViewCount();
+        int lastVisiblePosition = provider.getLastVisiblePosition();
         int endIndex = Math.max(lastVisiblePosition, firstVisiblePosition);
         int startIndex = Math.min(lastVisiblePosition, firstVisiblePosition);
         int visibility = 0;
         View mostVisibleView = null;
         int mostVisiblePosition = -1;
 
-        for (int i = startIndex; i < endIndex && i > 0; i++) {
-            View itemView = getConvertViewByPosition(i);
+        for (int i = startIndex; i < endIndex && i >= 0; i++) {
+            View itemView = getViewByPosition(i, provider);
             if (itemView == null) {
                 mostVisibleView = null;
                 mostVisiblePosition = i;
@@ -79,8 +76,7 @@ public abstract class SingleItemActiveCalculator implements Calculator {
         if (firstVisiblePosition == 0) {
             if (lastVisiblePosition - 1 >= 0) {
                 mostVisiblePosition = lastVisiblePosition - 1;
-                mostVisibleView = getConvertViewByPosition(mostVisiblePosition);
-
+                mostVisibleView = getViewByPosition(mostVisiblePosition, provider);
             }
         }
         if (mostVisiblePosition != -1) {
@@ -102,7 +98,7 @@ public abstract class SingleItemActiveCalculator implements Calculator {
      */
     @Override
     public void onScrollStateIdle(ItemPositionProvider provider) {
-        calculateMostVisibleView(provider.getFirstVisiblePosition(), provider.getLastVisiblePosition());
+        calculateMostVisibleView(provider);
     }
 
     @Override
@@ -111,14 +107,17 @@ public abstract class SingleItemActiveCalculator implements Calculator {
     }
 
 
-    /**
-     * @param adapterPosition
-     * @return 实现这个方法, 根据adapter的position, 获取这个position的item正在attach在哪个View上
-     * 返回值可能为空
-     */
-    @Override
-    public @Nullable
-    abstract View getConvertViewByPosition(int adapterPosition);
+    private View getViewByPosition(int pos, ItemPositionProvider provider) {
+        final int firstListItemPosition = provider.getFirstVisiblePosition() - provider.getHeadersViewCount();
+        final int lastListItemPosition = firstListItemPosition + provider.getChildCount() - 1;
+
+        if (pos < firstListItemPosition || pos > lastListItemPosition) {
+            return null;
+        } else {
+            final int childIndex = pos - firstListItemPosition;
+            return provider.getChildAt(childIndex);
+        }
+    }
 
     private boolean viewIsPartiallyHiddenBottom(int height) {
         return rectForCalculate.bottom > 0 && rectForCalculate.bottom < height;

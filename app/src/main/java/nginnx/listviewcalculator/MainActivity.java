@@ -1,9 +1,8 @@
 package nginnx.listviewcalculator;
 
-import android.app.Application;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -76,12 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 models.get(previousAdapterPosition).active = false;
             }
         };
-        calculator = new SingleItemActiveCalculator(callBack) {
-            @Override
-            public View getConvertViewByPosition(int adapterPosition) {
-                return models.get(adapterPosition).attachView;
-            }
-        };
+        calculator = new SingleItemActiveCalculator(callBack);
 
 
         itemPositionProvider = new ListViewPositionProvider(listView);

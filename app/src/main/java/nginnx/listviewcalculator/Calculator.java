@@ -1,6 +1,5 @@
 package nginnx.listviewcalculator;
 
-import android.support.annotation.Nullable;
 import android.view.View;
 
 /**
@@ -10,10 +9,8 @@ import android.view.View;
 public interface Calculator {
     int getSingleViewVisibility(View view);
 
-    void calculateMostVisibleView(int firstVisiblePosition, int lastVisiblePosition);
+    void calculateMostVisibleView(ItemPositionProvider provider);
 
-    @Nullable
-    View getConvertViewByPosition(int adapterPosition);
 
     void onScrollStateIdle(ItemPositionProvider itemsPositionGetter);
 

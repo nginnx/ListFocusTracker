@@ -16,4 +16,6 @@ public interface ItemPositionProvider {
     int getLastVisiblePosition();
 
     int getFirstVisiblePosition();
+
+    int getHeadersViewCount();
 }

@@ -34,4 +34,9 @@ public class ListViewPositionProvider implements ItemPositionProvider {
     public int getFirstVisiblePosition() {
         return listView.getFirstVisiblePosition();
     }
+
+    @Override
+    public int getHeadersViewCount() {
+        return listView.getHeaderViewsCount();
+    }
 }
